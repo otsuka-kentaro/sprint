@@ -31,15 +31,30 @@ func sprintValue(v reflect.Value, putsNilString bool) string {
 		reflect.Float32, reflect.Float64,
 		reflect.Complex64, reflect.Complex128,
 		reflect.String, reflect.Map,
-		reflect.Chan, reflect.Func, reflect.UnsafePointer,
-		reflect.Array, reflect.Slice:
+		reflect.Chan, reflect.Func, reflect.UnsafePointer:
 			return fmt.Sprint(v)
+	case reflect.Array, reflect.Slice:
+			var elements []string
+			for i := 0; i < v.Len(); i++ {
+				print := sprintValue(v.Index(i), false)
+
+				// if empty element
+				if print == "" {
+					continue
+				}
+				elements = append(elements, print)
+			}
+			// returns empty string if all field are invalid
+			if len(elements) == 0 {
+				return ""
+			}
+			return "[" + strings.Join(elements, ", ") + "]"
 	case reflect.Struct:
 		var fields []string
 		for i := 0; i < v.NumField(); i++ {
 			print := sprintValue(v.Field(i), false)
 
-			// if empty struct
+			// if empty field
 			if print == "" {
 				continue
 			}
