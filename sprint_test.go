@@ -7,6 +7,13 @@ import (
 
 func TestSprint(t *testing.T) {
 	type testType int
+	testType1 := testType(1)
+	testType2 := testType(2)
+	testType3 := testType(3)
+	testTypes := []*testType{
+		&testType1, &testType2, &testType3,
+	}
+	emptySlice := []interface{}{}
 	var ni interface{}
 	zero := 0
 	a := "a"
@@ -24,6 +31,7 @@ func TestSprint(t *testing.T) {
 		pskipped *interface{}
 		testTyp testType
 		pTestTyp *testType
+		testTypes []*testType
 	}{
 		in:  zero,
 		pin: &zero,
@@ -33,6 +41,7 @@ func TestSprint(t *testing.T) {
 		pbl: &bl,
 		ni:  ni,
 		pni: &ni,
+		testTypes: testTypes,
 	}
 	// contains no newline characters
 	strctExpect := fmt.Sprintf("{"+
@@ -42,7 +51,8 @@ func TestSprint(t *testing.T) {
 		"pst: %s, "+
 		"bl: %t, "+
 		"pbl: %t, "+
-		"testTyp: 0" +
+		"testTyp: 0, " +
+		"testTypes: [1, 2, 3]" +
 		"}", zero, zero, a, a, bl, bl)
 
 	tests := []struct {
@@ -56,6 +66,8 @@ func TestSprint(t *testing.T) {
 		{"string", a, "a"},
 		{"bool", bl, "true"},
 		{"struct", strct, strctExpect},
+		{"emptyslice", emptySlice, ""},
+		{"pslice", testTypes, "[1, 2, 3]"},
 
 		// pointer
 		{"*nil", &ni, "<nil>"},
@@ -63,6 +75,8 @@ func TestSprint(t *testing.T) {
 		{"*string", &a, "a"},
 		{"*bool", &bl, "true"},
 		{"*struct", &strct, strctExpect},
+		{"*emptyslice", &emptySlice, ""},
+		{"*pslice", &testTypes, "[1, 2, 3]"},
 	}
 
 	for _, test := range tests {
