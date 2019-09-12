@@ -6,6 +6,7 @@ import (
 )
 
 func TestSprint(t *testing.T) {
+	type testType int
 	var ni interface{}
 	zero := 0
 	a := "a"
@@ -19,6 +20,10 @@ func TestSprint(t *testing.T) {
 		pbl *bool
 		ni  interface{}
 		pni *interface{}
+		skipped interface{}
+		pskipped *interface{}
+		testTyp testType
+		pTestTyp *testType
 	}{
 		in:  zero,
 		pin: &zero,
@@ -37,8 +42,7 @@ func TestSprint(t *testing.T) {
 		"pst: %s, "+
 		"bl: %t, "+
 		"pbl: %t, "+
-		"ni: <nil>, "+
-		"pni: <nil>"+
+		"testTyp: 0" +
 		"}", zero, zero, a, a, bl, bl)
 
 	tests := []struct {
@@ -58,7 +62,7 @@ func TestSprint(t *testing.T) {
 		{"*int", &zero, "0"},
 		{"*string", &a, "a"},
 		{"*bool", &bl, "true"},
-		{"struct", &strct, strctExpect},
+		{"*struct", &strct, strctExpect},
 	}
 
 	for _, test := range tests {
