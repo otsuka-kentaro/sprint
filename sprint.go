@@ -14,6 +14,10 @@ func Sprint(s interface{}) string {
 
 // sprintValue handles value for iterating use.
 func sprintValue(v reflect.Value) string {
+	// v is nil
+	if v.Kind() == reflect.Invalid {
+		return "<nil>"
+	}
 	// dereference if value is a reference
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
