@@ -22,9 +22,9 @@ func sprintValue(v reflect.Value, putsNilString bool) string {
 	case reflect.Invalid:
 		if putsNilString {
 			return nilString
-		} else {
-			return ""
 		}
+
+		return ""
 	case reflect.Bool,
 		reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr,
@@ -32,23 +32,23 @@ func sprintValue(v reflect.Value, putsNilString bool) string {
 		reflect.Complex64, reflect.Complex128,
 		reflect.String, reflect.Map,
 		reflect.Chan, reflect.Func, reflect.UnsafePointer:
-			return fmt.Sprint(v)
+		return fmt.Sprint(v)
 	case reflect.Array, reflect.Slice:
-			var elements []string
-			for i := 0; i < v.Len(); i++ {
-				print := sprintValue(v.Index(i), false)
+		var elements []string
+		for i := 0; i < v.Len(); i++ {
+			print := sprintValue(v.Index(i), false)
 
-				// if empty element
-				if print == "" {
-					continue
-				}
-				elements = append(elements, print)
+			// if empty element
+			if print == "" {
+				continue
 			}
-			// returns empty string if all field are invalid
-			if len(elements) == 0 {
-				return ""
-			}
-			return "[" + strings.Join(elements, ", ") + "]"
+			elements = append(elements, print)
+		}
+		// returns empty string if all field are invalid
+		if len(elements) == 0 {
+			return ""
+		}
+		return "[" + strings.Join(elements, ", ") + "]"
 	case reflect.Struct:
 		var fields []string
 		for i := 0; i < v.NumField(); i++ {
@@ -70,12 +70,12 @@ func sprintValue(v reflect.Value, putsNilString bool) string {
 		if !el.IsValid() {
 			if putsNilString {
 				return nilString
-			} else {
-				return ""
 			}
-		} else {
-			return sprintValue(v, putsNilString)
+
+			return ""
 		}
+
+		return sprintValue(v, putsNilString)
 	case reflect.Ptr:
 		return sprintValue(v.Elem(), putsNilString)
 	default:
