@@ -7,7 +7,14 @@ import (
 )
 
 const (
+	emptyString = ""
+	leftSquareBracket = "["
+	rightSquareBracket = "]"
+	leftBrace = "{"
+	rightBrace = "}"
 	nilString = "<nil>"
+	fieldSeparator = ", "
+	structSeparator = ": "
 )
 
 // Sprint returns string like fmt.Sprint.
@@ -24,7 +31,7 @@ func sprintValue(v reflect.Value, putsNilString bool) string {
 			return nilString
 		}
 
-		return ""
+		return emptyString
 	case reflect.Bool,
 		reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64, reflect.Uintptr,
@@ -39,32 +46,32 @@ func sprintValue(v reflect.Value, putsNilString bool) string {
 			print := sprintValue(v.Index(i), false)
 
 			// if empty element
-			if print == "" {
+			if print == emptyString {
 				continue
 			}
 			elements = append(elements, print)
 		}
 		// returns empty string if all field are invalid
 		if len(elements) == 0 {
-			return ""
+			return emptyString
 		}
-		return "[" + strings.Join(elements, ", ") + "]"
+		return leftSquareBracket + strings.Join(elements, fieldSeparator) + rightSquareBracket
 	case reflect.Struct:
 		var fields []string
 		for i := 0; i < v.NumField(); i++ {
 			print := sprintValue(v.Field(i), false)
 
 			// if empty field
-			if print == "" {
+			if print == emptyString {
 				continue
 			}
-			fields = append(fields, v.Type().Field(i).Name+": "+print)
+			fields = append(fields, v.Type().Field(i).Name+structSeparator+print)
 		}
 		// returns empty string if all field are invalid
 		if len(fields) == 0 {
-			return ""
+			return emptyString
 		}
-		return "{" + strings.Join(fields, ", ") + "}"
+		return leftBrace + strings.Join(fields, fieldSeparator) + rightBrace
 	case reflect.Interface:
 		el := v.Elem()
 		if !el.IsValid() {
@@ -72,7 +79,7 @@ func sprintValue(v reflect.Value, putsNilString bool) string {
 				return nilString
 			}
 
-			return ""
+			return emptyString
 		}
 
 		return sprintValue(v, putsNilString)
